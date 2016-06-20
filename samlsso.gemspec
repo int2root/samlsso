@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency("uuid", ["~> 2.3"])
-  spec.add_runtime_dependency("xmlenc", ["~> 0.1.7"])
+  spec.add_runtime_dependency("xmlenc", ["~> 0.6.4"])
   if RUBY_VERSION < '1.9'
     # 1.8.7
     spec.add_runtime_dependency('nokogiri', '~> 1.6.0')
