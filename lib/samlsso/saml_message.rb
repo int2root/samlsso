@@ -63,13 +63,13 @@ module Samlsso
             validation_error("XML document seems to be malformed and does not have correct Nodes")
           else
             encrypted_assertion.remove
-            decrypted_doc.root.add_child(assertion.last)
+            decrypted_doc.root.add_child(assertion.last.clone)
             return decrypted_doc.to_xml.squish
           end
         end
         return decoded_saml
       end
-      
+
       def decode_raw_saml(saml)
         if saml =~ /^</
           return saml
