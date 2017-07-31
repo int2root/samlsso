@@ -217,26 +217,47 @@ module XMLSecurity
       noko_sig_element.remove
 
       # check digests
-      tmp = REXML::XPath.each(@sig_element, "//ds:Reference", {"ds"=>DSIG})
-      tmp = REXML::XPath.each(@sig_element, "//ds:Reference") unless tmp.count > 0
-      tmp do |ref|
-        uri                           = ref.attributes.get_attribute("URI").value
+      if REXML::XPath.first(@sig_element, "//ds:Reference", {"ds"=>DSIG})
+        REXML::XPath.each(@sig_element, "//ds:Reference", {"ds"=>DSIG}) do |ref|
+          uri                           = ref.attributes.get_attribute("URI").value
 
-        hashed_element                = document.at_xpath("//*[@ID='#{uri[1..-1]}']")
-        canon_algorithm               = canon_algorithm REXML::XPath.first(ref, '//ds:CanonicalizationMethod', 'ds' => DSIG)
-        canon_hashed_element          = hashed_element.canonicalize(canon_algorithm, inclusive_namespaces)
+          hashed_element                = document.at_xpath("//*[@ID='#{uri[1..-1]}']")
+          canon_algorithm               = canon_algorithm REXML::XPath.first(ref, '//ds:CanonicalizationMethod', 'ds' => DSIG)
+          canon_hashed_element          = hashed_element.canonicalize(canon_algorithm, inclusive_namespaces)
 
-        digest_algorithm              = algorithm(REXML::XPath.first(ref, "//ds:DigestMethod", 'ds' => DSIG))
+          digest_algorithm              = algorithm(REXML::XPath.first(ref, "//ds:DigestMethod", 'ds' => DSIG))
 
-        hash                          = digest_algorithm.digest(canon_hashed_element)
+          hash                          = digest_algorithm.digest(canon_hashed_element)
 
-        base64_digest                 = REXML::XPath.first(ref, "//ds:DigestValue", {"ds"=>DSIG})
-        base64_digest                 = REXML::XPath.first(ref, "//ds:DigestValue") unless base64_digest
-        digest_value                  = Base64.decode64(base64_digest.text)
+          base64_digest                 = REXML::XPath.first(ref, "//ds:DigestValue", {"ds"=>DSIG})
+          base64_digest                 = REXML::XPath.first(ref, "//ds:DigestValue") unless base64_digest
+          digest_value                  = Base64.decode64(base64_digest.text)
 
-        unless digests_match?(hash, digest_value)
-          @errors << "Digest mismatch"
-          return soft ? false : (raise Samlsso::ValidationError.new("Digest mismatch"))
+          unless digests_match?(hash, digest_value)
+            @errors << "Digest mismatch"
+            return soft ? false : (raise Samlsso::ValidationError.new("Digest mismatch"))
+          end
+        end
+      else
+        REXML::XPath.each(@sig_element, "//ds:Reference") do |ref|
+          uri                           = ref.attributes.get_attribute("URI").value
+
+          hashed_element                = document.at_xpath("//*[@ID='#{uri[1..-1]}']")
+          canon_algorithm               = canon_algorithm REXML::XPath.first(ref, '//ds:CanonicalizationMethod', 'ds' => DSIG)
+          canon_hashed_element          = hashed_element.canonicalize(canon_algorithm, inclusive_namespaces)
+
+          digest_algorithm              = algorithm(REXML::XPath.first(ref, "//ds:DigestMethod", 'ds' => DSIG))
+
+          hash                          = digest_algorithm.digest(canon_hashed_element)
+
+          base64_digest                 = REXML::XPath.first(ref, "//ds:DigestValue", {"ds"=>DSIG})
+          base64_digest                 = REXML::XPath.first(ref, "//ds:DigestValue") unless base64_digest
+          digest_value                  = Base64.decode64(base64_digest.text)
+
+          unless digests_match?(hash, digest_value)
+            @errors << "Digest mismatch"
+            return soft ? false : (raise Samlsso::ValidationError.new("Digest mismatch"))
+          end
         end
       end
 
