@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency("xmlenc", ["~> 0.6.4"])
   if RUBY_VERSION < '1.9'
     # 1.8.7
-    spec.add_runtime_dependency('nokogiri', '~> 1.6.0')
+    spec.add_runtime_dependency('nokogiri', '~> 1.8.5')
     spec.add_development_dependency('timecop', '<= 0.6.0')
   else
     spec.add_runtime_dependency('nokogiri', '~> 1.8.5')
