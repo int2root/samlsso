@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
     spec.add_runtime_dependency('nokogiri', '~> 1.6.0')
     spec.add_development_dependency('timecop', '<= 0.6.0')
   else
-    spec.add_runtime_dependency('nokogiri', '~> 1.6.0')
+    spec.add_runtime_dependency('nokogiri', '~> 1.8.5')
     spec.add_development_dependency('timecop',  '~> 0.7.2')
   end
 
