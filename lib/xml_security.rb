@@ -225,7 +225,9 @@ module XMLSecurity
           canon_algorithm               = canon_algorithm REXML::XPath.first(ref, '//ds:CanonicalizationMethod', 'ds' => DSIG)
           canon_hashed_element          = hashed_element.canonicalize(canon_algorithm, inclusive_namespaces)
 
-          digest_algorithm              = algorithm(REXML::XPath.first(ref, "//ds:DigestMethod", 'ds' => DSIG))
+          digest_algorithm_str          = REXML::XPath.first(ref, "//ds:DigestMethod", 'ds' => DSIG)
+          digest_algorithm_str          = REXML::XPath.first(ref, "//ds:DigestMethod") unless digest_algorithm_str
+          digest_algorithm              = algorithm(digest_algorithm_str)
 
           hash                          = digest_algorithm.digest(canon_hashed_element)
 
@@ -246,7 +248,9 @@ module XMLSecurity
           canon_algorithm               = canon_algorithm REXML::XPath.first(ref, '//ds:CanonicalizationMethod', 'ds' => DSIG)
           canon_hashed_element          = hashed_element.canonicalize(canon_algorithm, inclusive_namespaces)
 
-          digest_algorithm              = algorithm(REXML::XPath.first(ref, "//ds:DigestMethod", 'ds' => DSIG))
+          digest_algorithm_str          = REXML::XPath.first(ref, "//ds:DigestMethod", 'ds' => DSIG)
+          digest_algorithm_str          = REXML::XPath.first(ref, "//ds:DigestMethod") unless digest_algorithm_str
+          digest_algorithm              = algorithm(digest_algorithm_str)
 
           hash                          = digest_algorithm.digest(canon_hashed_element)
 
